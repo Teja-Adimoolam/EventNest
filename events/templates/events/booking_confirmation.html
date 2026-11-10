@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation | EventNest</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            font-family: Arial, sans-serif;
+            background: #f5f3ff;
+            color: #222;
+        }
+
+        .ticket-container {
+            max-width: 750px;
+            margin: 30px auto;
+        }
+
+        .ticket-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+        }
+
+        .ticket-header {
+            background: linear-gradient(135deg, #6c3ce9, #a855f7);
+            color: white;
+            padding: 35px;
+            text-align: center;
+        }
+
+        .ticket-header h1 {
+            margin: 0 0 10px;
+        }
+
+        .ticket-body {
+            padding: 35px;
+        }
+
+        .booking-id {
+            background: #f3efff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow-wrap: anywhere;
+        }
+
+        .booking-id small,
+        .detail-item small {
+            display: block;
+            color: #777;
+            margin-bottom: 7px;
+        }
+
+        .ticket-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .detail-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .total {
+            background: #f3efff;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .ticket-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .ticket-actions a,
+        .ticket-actions button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .home-btn {
+            background: #eee;
+            color: #333;
+        }
+
+        .print-btn {
+            background: #6c3ce9;
+            color: white;
+        }
+
+        @media(max-width: 550px) {
+            .ticket-details {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-body {
+                padding: 22px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .ticket-card {
+                box-shadow: none;
+            }
+
+            .ticket-actions {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="ticket-container">
+    <div class="ticket-card">
+
+        <div class="ticket-header">
+            <h1>🎉 Booking Confirmed!</h1>
+            <p>Your tickets are ready. Enjoy the event!</p>
+        </div>
+
+        <div class="ticket-body">
+
+            <div class="booking-id">
+                <small>BOOKING ID</small>
+                <strong>{{ booking.booking_id }}</strong>
+            </div>
+
+            <h2>{{ booking.event.title }}</h2>
+
+            <div class="ticket-details">
+
+                <div class="detail-item">
+                    <small>📅 Event Date</small>
+                    <strong>{{ booking.event.event_date|date:"d M Y, h:i A" }}</strong>
+                </div>
+
+                <div class="detail-item">
+                    <small>📍 Location</small>
+                    <strong>{{ booking.event.location }}</strong>
+                </div>
+
+                <div class="detail-item">
+                    <small>🎟️ Tickets</small>
+                    <strong>{{ booking.tickets }}</strong>
+                </div>
+
+                <div class="detail-item">
+                    <small>💰 Price Per Ticket</small>
+                    <strong>₹{{ booking.event.price }}</strong>
+                </div>
+
+                <div class="detail-item">
+                    <small>👤 Booked By</small>
+                    <strong>{{ booking.user.username }}</strong>
+                </div>
+
+                <div class="detail-item">
+                    <small>🕒 Booking Date</small>
+                    <strong>{{ booking.booked_at|date:"d M Y, h:i A" }}</strong>
+                </div>
+
+            </div>
+
+            <div class="total">
+                <span>Total Amount</span>
+                <span>₹{{ total_amount }}</span>
+            </div>
+
+            <div class="ticket-actions">
+                <a href="{% url 'home' %}" class="home-btn">
+                    Back to Home
+                </a>
+
+                <button onclick="window.print()" class="print-btn">
+                    Print E-Ticket
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

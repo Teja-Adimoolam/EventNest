@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | EventNest</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            color: #202044;
+            background:
+                radial-gradient(circle at 15% 20%, #6366f1 0, transparent 35%),
+                radial-gradient(circle at 85% 80%, #a78bfa 0, transparent 35%),
+                linear-gradient(135deg, #111638, #312e81 55%, #4f46e5);
+        }
+
+        .signup-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 36px;
+            border: 1px solid rgba(255,255,255,.7);
+            border-radius: 24px;
+            background: rgba(255,255,255,.97);
+            box-shadow: 0 25px 80px rgba(10,10,40,.3);
+            animation: appear .5s ease-out;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .brand {
+            text-align: center;
+            color: #5145cd;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .brand span {
+            color: #8b5cf6;
+        }
+
+        .icon {
+            width: 58px;
+            height: 58px;
+            margin: 22px auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: #eeebff;
+            font-size: 27px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            color: #202044;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            margin: 0 0 24px;
+            color: #77768d;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 8px;
+            color: #34334e;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            min-height: 47px;
+            padding: 12px 14px;
+            border: 1px solid #dedeee;
+            border-radius: 11px;
+            background: #fafaff;
+            color: #202044;
+            font-size: 15px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #7667ee;
+            box-shadow: 0 0 0 4px rgba(118,103,238,.13);
+            background: white;
+        }
+
+        .password-wrap {
+            position: relative;
+        }
+
+        .password-wrap input {
+            padding-right: 65px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            width: auto;
+            margin: 0;
+            padding: 6px;
+            transform: translateY(-50%);
+            background: transparent;
+            color: #5145cd;
+            font-size: 12px;
+        }
+
+        .toggle-password:hover {
+            background: transparent;
+            color: #312e81;
+        }
+
+        .helptext {
+            display: block;
+            margin-top: 7px;
+            color: #77768d;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        ul {
+            padding-left: 20px;
+            color: #b42318;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .errorlist {
+            color: #b42318;
+            font-size: 13px;
+        }
+
+        .login-button {
+            width: 100%;
+            min-height: 50px;
+            margin-top: 24px;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(100deg, #5145cd, #7c3aed);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(81,69,205,.24);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(81,69,205,.32);
+        }
+
+        .footer {
+            margin-top: 23px;
+            color: #77768d;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #5145cd;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #7c3aed;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 18px;
+            color: #77768d;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px;
+            }
+
+            .signup-card {
+                padding: 27px 22px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="signup-card">
+        <div class="brand">EVENT<span>NEST</span></div>
+
+        <div class="icon">✦</div>
+
+        <h1>Create Account</h1>
+        <p class="subtitle">
+            Join EventNest and discover experiences worth remembering.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+
+                {% if field.name == "password1" or field.name == "password2" %}
+                    <div class="password-wrap">
+                        {{ field }}
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            onclick="togglePassword(this)">
+                            Show
+                        </button>
+                    </div>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+
+                {% if field.help_text %}
+                    <small class="helptext">
+                        {{ field.help_text|safe }}
+                    </small>
+                {% endif %}
+
+                {{ field.errors }}
+            {% endfor %}
+
+            <button class="login-button" type="submit">
+                Create My Account →
+            </button>
+        </form>
+
+        <p class="footer">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </p>
+
+        <a class="back-link" href="{% url 'home' %}">
+            ← Back to Events
+        </a>
+    </div>
+
+    <script>
+        function togglePassword(button) {
+            const input = button.parentElement.querySelector("input");
+
+            if (input.type === "password") {
+                input.type = "text";
+                button.textContent = "Hide";
+            } else {
+                input.type = "password";
+                button.textContent = "Show";
+            }
+        }
+    </script>
+</body>
+</html>
+```

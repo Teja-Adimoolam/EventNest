@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | EventNest</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f5ff;
+            color: #241b3b;
+        }
+
+        header {
+            background: #6c3ce9;
+            color: white;
+            padding: 22px 7%;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        main {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .booking-card {
+            background: white;
+            padding: 24px;
+            margin: 20px 0;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px #241b3b12;
+        }
+
+        .booking-card h2 {
+            margin-top: 0;
+            color: #6035d6;
+        }
+
+        .booking-card p {
+            line-height: 1.7;
+            color: #514b61;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .confirmed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .cancel-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .cancel-btn:hover {
+            background: #b91c1c;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #6035d6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .empty {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .message {
+            padding: 12px 16px;
+            margin: 12px 0;
+            background: #ede9fe;
+            color: #6035d6;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>EventNest — My Bookings</h1>
+    </header>
+
+    <main>
+
+        <h2>Your Tickets 🎟️</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% for booking in bookings %}
+
+            <div class="booking-card">
+
+                <h2>{{ booking.event.title }}</h2>
+
+                {% if booking.status == "confirmed" %}
+                    <span class="status confirmed">
+                        ✓ Confirmed
+                    </span>
+                {% else %}
+                    <span class="status cancelled">
+                        ✕ Cancelled
+                    </span>
+                {% endif %}
+
+                <p>
+                    <strong>Location:</strong>
+                    {{ booking.event.location }}
+                </p>
+
+                <p>
+                    <strong>Event Date:</strong>
+                    {{ booking.event.event_date|date:"d M Y, h:i A" }}
+                </p>
+
+                <p>
+                    <strong>Tickets:</strong>
+                    {{ booking.tickets }}
+                </p>
+
+                <p>
+                    <strong>Price per ticket:</strong>
+                    ₹{{ booking.event.price }}
+                </p>
+
+                <p>
+                    <strong>Total Amount:</strong>
+                    ₹{{ booking.total_amount|floatformat:2 }}
+                </p>
+
+                <p>
+                    <strong>Booked on:</strong>
+                    {{ booking.booked_at|date:"d M Y, h:i A" }}
+                </p>
+
+                {% if booking.status == "confirmed" and booking.event.event_date > now %}
+                    <form method="POST"
+                          action="{% url 'cancel_booking' booking.booking_id %}"
+                          onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+
+                        {% csrf_token %}
+
+                        <button type="submit" class="cancel-btn">
+                            Cancel Booking
+                        </button>
+
+                    </form>
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <div class="empty">
+                <h3>No bookings yet!</h3>
+                <p>Explore events and book your first ticket.</p>
+
+                <a href="{% url 'home' %}" class="back-link">
+                    Explore Events
+                </a>
+            </div>
+
+        {% endfor %}
+
+        <a href="{% url 'home' %}" class="back-link">
+            ← Back to Events
+        </a>
+
+    </main>
+
+</body>
+</html>

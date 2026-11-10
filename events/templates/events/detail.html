@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event.title }} | EventNest</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f5fc;
+            color: #252342;
+            line-height: 1.6;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 7%;
+            background: white;
+            border-bottom: 1px solid #eceaf5;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: #6845e8;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: #6845e8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 22px;
+        }
+
+        .event-panel {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 45px rgba(48, 35, 100, 0.08);
+        }
+
+        .hero {
+            padding: 48px 45px;
+            color: white;
+            background: linear-gradient(120deg, #5035cb, #9660f0);
+        }
+
+        .category {
+            display: inline-block;
+            padding: 6px 14px;
+            margin-bottom: 14px;
+            border-radius: 30px;
+            background: rgba(255,255,255,.18);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: clamp(30px, 5vw, 44px);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #f0eaff;
+        }
+
+        .content {
+            padding: 35px;
+        }
+
+        .about {
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            color: #737188;
+            white-space: pre-line;
+        }
+
+        /* Horizontal event information cards */
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .info-card {
+            padding: 23px;
+            min-width: 0;
+            background: #fff;
+            border: 1px solid #e9e5f6;
+            border-radius: 18px;
+            box-shadow: 0 5px 18px rgba(48,35,100,.035);
+            transition: transform .25s ease,
+                        box-shadow .25s ease,
+                        border-color .25s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: #b9a8ff;
+            box-shadow: 0 13px 28px rgba(82,56,180,.12);
+        }
+
+        .card-icon {
+            width: 43px;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0ebff;
+            border-radius: 13px;
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .info-label {
+            display: block;
+            color: #858198;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .7px;
+            margin-bottom: 7px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .info-subtitle {
+            color: #77738c;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .price {
+            font-size: 29px;
+            font-weight: 800;
+            color: #6040d4;
+        }
+
+        /* Ticket availability box */
+
+        .availability-card {
+            padding: 26px;
+            margin-bottom: 25px;
+            border: 1px solid #e9e5f6;
+            border-radius: 20px;
+            background: #fff;
+            transition: box-shadow .25s ease,
+                        border-color .25s ease;
+        }
+
+        .availability-card:hover {
+            border-color: #b9a8ff;
+            box-shadow: 0 10px 25px rgba(82,56,180,.08);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 20px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+        }
+
+        .availability-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .availability-item {
+            padding: 20px;
+            background: #f8f7fd;
+            border: 1px solid #efedf8;
+            border-radius: 15px;
+        }
+
+        .available-number {
+            font-size: 30px;
+            font-weight: 800;
+            color: #168653;
+        }
+
+        .sold-number {
+            font-size: 30px;
+            font-weight: 800;
+            color: #6845e8;
+        }
+
+        .availability-caption {
+            color: #77738c;
+            font-size: 13px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 9px;
+            margin-top: 20px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #eeebf7;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #6845e8, #a06af2);
+            transition: width .3s ease;
+        }
+
+        /* Ticket booking box */
+
+        .booking-box {
+            padding: 27px;
+            border: 1px solid #e9e5f6;
+            border-radius: 20px;
+            background: #fff;
+            transition: box-shadow .25s ease,
+                        border-color .25s ease;
+        }
+
+        .booking-box:hover {
+            border-color: #b9a8ff;
+            box-shadow: 0 10px 25px rgba(82,56,180,.08);
+        }
+
+        .booking-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .booking-heading h2 {
+            margin: 0;
+        }
+
+        .booking-form label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .ticket-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .ticket-selector button {
+            width: 44px;
+            height: 44px;
+            border: 1px solid #e2dcfa;
+            border-radius: 12px;
+            background: #f0ebff;
+            color: #5b35d5;
+            font-size: 23px;
+            cursor: pointer;
+            transition: background .2s, transform .2s;
+        }
+
+        .ticket-selector button:hover {
+            background: #ded4ff;
+            transform: scale(1.05);
+        }
+
+        .ticket-selector input {
+            width: 75px;
+            height: 44px;
+            text-align: center;
+            border: 1px solid #ddd5f7;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            color: #30245f;
+        }
+
+        .total-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 18px 0;
+            margin-bottom: 12px;
+            border-top: 1px solid #efedf6;
+        }
+
+        .total-label {
+            color: #77738c;
+            font-weight: 600;
+        }
+
+        .total-preview {
+            font-size: 25px;
+            font-weight: 800;
+            color: #6040d4;
+            overflow-wrap: anywhere;
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 13px;
+            background: linear-gradient(120deg, #6845e8, #4930bd);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s, opacity .2s;
+        }
+
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(85,55,190,.25);
+        }
+
+        .book-btn:disabled {
+            background: #aaa4bd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .login-link {
+            color: #6845e8;
+            font-weight: 700;
+        }
+
+        .messages-container {
+            margin-bottom: 18px;
+        }
+
+        .alert-message {
+            padding: 13px 16px;
+            margin-bottom: 8px;
+            border-radius: 11px;
+            background: #e9f8ee;
+            color: #176b3a;
+            border: 1px solid #c9ecd5;
+            font-size: 14px;
+        }
+
+        .footer {
+            padding: 22px 35px;
+            border-top: 1px solid #efedf6;
+            color: #858198;
+            font-size: 13px;
+        }
+
+        @media (max-width: 760px) {
+            nav {
+                padding: 18px 5%;
+            }
+
+            .container {
+                margin: 22px auto;
+                padding: 0 13px;
+            }
+
+            .hero {
+                padding: 35px 25px;
+            }
+
+            .content {
+                padding: 22px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 13px;
+            }
+
+            .info-card {
+                padding: 20px;
+            }
+
+            .availability-card,
+            .booking-box {
+                padding: 20px;
+            }
+
+            .footer {
+                padding: 18px 22px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .availability-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .total-preview {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a class="logo" href="/">EventNest.</a>
+        <a class="back-link" href="/">← Back to Events</a>
+    </nav>
+
+    <main class="container">
+        <article class="event-panel">
+
+            <header class="hero">
+                <span class="category">
+                    {{ event.get_category_display }}
+                </span>
+
+                <h1>{{ event.title }}</h1>
+
+                <p>Discover something exciting. Make every moment count.</p>
+            </header>
+
+            <section class="content">
+
+                <div class="about">
+                    <h2>About this event</h2>
+
+                    <p class="description">{{ event.description|default:"More details about this event will be available soon." }}</p>
+                </div>
+
+                <!-- Three horizontal information cards -->
+                <div class="info-grid">
+
+                    <div class="info-card">
+                        <div class="card-icon">📅</div>
+                        <span class="info-label">DATE & TIME</span>
+                        <div class="info-value">
+                            {{ event.event_date|date:"d M Y" }}
+                        </div>
+                        <div class="info-subtitle">
+                            {{ event.event_date|date:"h:i A" }}
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📍</div>
+                        <span class="info-label">LOCATION</span>
+                        <div class="info-value">{{ event.location }}</div>
+                        <div class="info-subtitle">Event venue</div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎫</div>
+                        <span class="info-label">TICKET PRICE</span>
+                        <div class="price">
+                            {% if event.price == 0 %}
+                                Free
+                            {% else %}
+                                ₹{{ event.price|floatformat:2 }}
+                            {% endif %}
+                        </div>
+                        <div class="info-subtitle">Per ticket</div>
+                    </div>
+
+                </div>
+
+                <!-- Availability card -->
+                <section class="availability-card">
+                    <div class="section-heading">
+                        <span class="card-icon">🎫</span>
+                        <h2>Ticket Availability</h2>
+                    </div>
+
+                    <div class="availability-grid">
+                        <div class="availability-item">
+                            <span class="info-label">AVAILABLE</span>
+                            <div class="available-number">
+                                {{ available_tickets }}
+                            </div>
+                            <div class="availability-caption">
+                                Tickets remaining
+                            </div>
+                        </div>
+
+                        <div class="availability-item">
+                            <span class="info-label">SOLD</span>
+                            <div class="sold-number">
+                                {{ booked_tickets }}
+                            </div>
+                            <div class="availability-caption">
+                                Out of {{ event.total_tickets }} tickets
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-track">
+                       <div class="progress-fill"
+                data-progress="{{ sold_percentage }}">
+                </div>
+                    </div>
+                    </div>
+                </section>
+
+                <!-- Booking card -->
+                <section class="booking-box">
+                    <div class="booking-heading">
+                        <span class="card-icon">🎫</span>
+                        <h2>Choose Your Tickets</h2>
+                    </div>
+
+                    {% if messages %}
+                        <div class="messages-container">
+                            {% for message in messages %}
+                                <div class="alert-message">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        <form method="POST"
+                              action="{% url 'book_event' event.id %}"
+                              class="booking-form">
+                            {% csrf_token %}
+
+                            <label for="tickets">Number of tickets</label>
+
+                            <div class="ticket-selector">
+                                <button type="button"
+                                        aria-label="Remove one ticket"
+                                        onclick="changeTickets(-1)">−</button>
+
+                                <input type="number"
+                                       id="tickets"
+                                       name="tickets"
+                                       min="1"
+                                       max="10"
+                                       value="1"
+                                       required>
+
+                                <button type="button"
+                                        aria-label="Add one ticket"
+                                        onclick="changeTickets(1)">+</button>
+                            </div>
+
+                            <div class="total-row">
+                                <span class="total-label">Total amount</span>
+                                <span class="total-preview">
+                                    ₹<span id="total-price">{{ event.price|floatformat:2 }}</span>
+                                </span>
+                            </div>
+
+                            <button type="submit"
+                                    class="book-btn"
+                                    {% if available_tickets == 0 or event.event_date <= now %}disabled{% endif %}>
+                                {% if available_tickets == 0 %}
+                                    Sold Out
+                                {% else %}
+                                    Book Tickets →
+                                {% endif %}
+                            </button>
+                        </form>
+
+                        <script>
+                            const ticketPrice = Number("{{ event.price }}");
+                            const ticketInput = document.getElementById("tickets");
+                            const totalPrice = document.getElementById("total-price");
+
+                            function updateTotal() {
+                                let quantity = Number(ticketInput.value) || 1;
+                                quantity = Math.max(1, Math.min(10, quantity));
+                                totalPrice.textContent = (ticketPrice * quantity).toFixed(2);
+                            }
+
+                            function changeTickets(amount) {
+                                let quantity = Number(ticketInput.value) || 1;
+                                quantity = Math.max(1, Math.min(10, quantity + amount));
+                                ticketInput.value = quantity;
+                                updateTotal();
+                            }
+
+                            ticketInput.addEventListener("input", updateTotal);
+                        </script>
+
+                    {% else %}
+                        <p>Please log in to book tickets.</p>
+                        <a class="login-link" href="{% url 'login' %}">Login to continue →</a>
+                    {% endif %}
+                </section>
+
+            </section>
+
+            <footer class="footer">
+                EventNest · Find your next experience.
+            </footer>
+
+        </article>
+    </main>
+</body>
+</html>
